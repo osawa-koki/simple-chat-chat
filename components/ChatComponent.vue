@@ -21,10 +21,11 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, setDoc, doc } from "firebase/firestore";
 import db from "~/src/firebase";
 
 import { Channel, Message, User } from "~/src/interface";
+import guid from "~/src/guid";
 
 export default defineComponent({
   name: 'ChatComponent',
@@ -72,6 +73,20 @@ export default defineComponent({
           date: doc.data().date.toDate().toLocaleString(),
         } as Message);
       });
+    },
+    async SendMessage() {
+      if (this.text === '') return;
+      const id = guid();
+      const message: Message = {
+        id,
+        text: this.text,
+        username: this.user.name,
+        channel_id: this.channel_selected,
+        date: new Date(),
+      };
+      // dbに追加
+      await setDoc(doc(db, "messages", id), message);
+      this.text = '';
     }
   }
 })
@@ -89,6 +104,10 @@ export default defineComponent({
   }
 }
 #ChatContent {
+  padding: 0.5rem;
+  max-height: 500px;
+  overflow: auto;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
   .MessageUnit {
     display: grid;
     grid-template-columns: 1fr 1fr;
