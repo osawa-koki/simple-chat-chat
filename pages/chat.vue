@@ -69,9 +69,18 @@ export default defineComponent({
       }
     },
     DeleteChannel(channel: Channel) {
-      if (window.confirm("本当に削除しますか？") === false) return;
-      this.channels = this.channels.filter((c) => c.id !== channel.id);
-      this.SetDialog("チャネルを削除しました。", 0);
+      // テンプレチャネルは削除できない
+      if (template_channels.find((c) => c.id === channel.id)) {
+        this.SetDialog("テンプレートチャネルは削除できません。", -1);
+        return;
+      }
+      try {
+        deleteDoc(doc(db, "channels", channel.id));
+        this.channels = this.channels.filter((c) => c.id !== channel.id);
+        this.SetDialog("チャネルを削除しました。", 0);
+      } catch (error) {
+        this.SetDialog("チャネルの削除に失敗しました。", -1);
+      }
     },
     SetDialog(error: string, type: number) {
       this.DialogMessage = error;
