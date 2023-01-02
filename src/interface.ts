@@ -16,6 +16,7 @@ type Channel = {
 type User = {
   id: string;
   name: string;
+  comment: string;
 };
 
 export type { Message, Channel, User };

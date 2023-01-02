@@ -5,21 +5,22 @@
       <h1>👼 Profile 👼</h1>
       <p>プロフィールの設定を行うことができます。</p>
       <h2>🦈 Your Profile</h2>
+      <hr />
       <h3>🐔 Your name</h3>
-      <div class="alert alert-primary" role="alert">{{ username }}</div>
+      <div class="alert alert-primary" role="alert">{{ user.name }}</div>
       <h3>🐔 Your comment</h3>
-      <div class="alert alert-info" role="alert">{{ comment }}</div>
+      <div class="alert alert-info comment" role="alert">{{ user.comment }}</div>
       <hr />
       <div class="box">
         <label for="username" class="form-label">Your name</label>
-        <input id="username" type="text" class="form-control" />
+        <input id="username" v-model="name" type="text" class="form-control" />
       </div>
       <div class="box">
         <label for="comment" class="form-label">One Comment</label>
-        <textarea id="comment" class="form-control" rows="3"></textarea>
+        <textarea id="comment" v-model="comment" class="form-control" rows="7"></textarea>
       </div>
       <div class="center box">
-        <button type="button" class="btn btn-outline-success">Set 🐠</button>
+        <button type="button" class="btn btn-outline-success" @click="SetProfile">Set 🐠</button>
       </div>
     </div>
   </div>
@@ -28,17 +29,13 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
-import { Channel } from '~/src/interface';
+import { User } from '~/src/interface';
 
 export default defineComponent({
   name: 'ChannelComponent',
   props: {
-    username: {
-      type: String,
-      required: true,
-    },
-    comment: {
-      type: String,
+    user: {
+      type: Object as () => User,
       required: true,
     },
   },
@@ -49,8 +46,16 @@ export default defineComponent({
     }
   },
   mounted() {
+    this.name = this.user.name;
+    this.comment = this.user.comment;
   },
   methods: {
+    SetProfile() {
+      this.$emit('SetProfile', {
+        name: this.name,
+        comment: this.comment,
+      } as User);
+    },
   },
 });
 </script>
@@ -58,5 +63,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import "../node_modules/bootstrap/scss/bootstrap";
 
-
+#Central {
+  .comment {
+    white-space: pre;
+  }
+}
 </style>

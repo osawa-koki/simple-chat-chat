@@ -5,7 +5,7 @@
     <ChatSetting :screen="screen" @SetScreen="SetScreen" />
     <WelcomeComponent v-if="screen === 0" />
     <ChannelComponent v-if="screen === 2" :channel="channel" :channels="channels" @UseChannel="UseChannel" @MakeChannel="MakeChannel" @DeleteChannel="DeleteChannel" @ImportChannel="ImportChannel" @SetDialog="SetDialog" />
-    <ProfileComponent v-if="screen === 3" :username="username" :comment="comment" />
+    <ProfileComponent v-if="screen === 3" :user="user" @SetProfile="SetProfile" />
   </main>
   <div id="Dialog" role="alert" :class="`${DialogMessage !== null ? '' : 'hidden'} alert alert-${DialogType === 0 ? 'info' : 'danger'}`">
     <span>{{ DialogMessage }}</span>
@@ -21,7 +21,7 @@ import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc } fro
 
 import firebaseConfig from '~/firebaseConfig';
 
-import { Message, Channel } from '~/src/interface';
+import { Message, Channel, User } from '~/src/interface';
 import { template_channels } from "~/src/templates";
 
 // Initialize Firebase
@@ -38,8 +38,11 @@ export default defineComponent({
       InsertError: null as string | null,
       DialogMessage: null as string | null,
       DialogType: 0 as number, // 0: Success, -1: Error
-      username: "Mr. Tako",
-      comment: "実はわたくし、脳が9個あるんです。\nメインパートにひとつと、各足にひとつずつです。",
+      user: {
+        id: "0",
+        name: "Mr. Tako",
+        comment: "実はわたくし、脳が9個あるんです。\nメインパートにひとつと、各足にひとつずつです。",
+      } as User,
       messages: [] as Message[],
       channel: template_channels[0] as Channel,
       channels: [...template_channels] as Channel[],
@@ -105,6 +108,14 @@ export default defineComponent({
       } catch (error) {
         this.SetDialog("チャネルの削除に失敗しました。", -1);
       }
+    },
+    SetProfile(user: User) {
+      this.user = {
+        id: this.user.id,
+        name: user.name,
+        comment: user.comment,
+      };
+      this.SetDialog("プロフィールを更新しました。", 0);
     },
     SetDialog(error: string, type: number) {
       this.DialogMessage = error;
