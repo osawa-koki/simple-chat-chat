@@ -4,11 +4,11 @@
   <main>
     <ChatSetting :screen="screen" @SetScreen="SetScreen" />
     <WelcomeComponent v-if="screen === 0" />
-    <ChannelComponent v-if="screen === 2" :channel="channel" :channels="channels" @MakeChannel="MakeChannel" />
+    <ChannelComponent v-if="screen === 2" :channel="channel" :channels="channels" @UseChannel="UseChannel" @MakeChannel="MakeChannel" />
   </main>
-  <div id="ErrorDialog" class="alert alert-danger" role="alert" :class="ErrorDialogMessage !== null ? '' : 'hidden'">
-    <span>{{ ErrorDialogMessage }}</span>
-    <button type="button" class="btn-close" aria-label="Close" @click="() => {ErrorDialogMessage = null}"></button>
+  <div id="Dialog" role="alert" :class="`${DialogMessage !== null ? '' : 'hidden'} alert alert-${DialogType === 0 ? 'info' : 'danger'}`">
+    <span>{{ DialogMessage }}</span>
+    <button type="button" class="btn-close" aria-label="Close" @click="() => {DialogMessage = null}"></button>
   </div>
   </div>
 </template>
@@ -35,7 +35,8 @@ export default defineComponent({
     return {
       screen: 0,
       InsertError: null as string | null,
-      ErrorDialogMessage: null as string | null,
+      DialogMessage: null as string | null,
+      DialogType: 0 as number, // 0: Success, -1: Error
       sending: false,
       reading: false,
       deleting: false,
@@ -64,13 +65,18 @@ export default defineComponent({
       console.log("SetScreen", screen);
       this.screen = screen;
     },
-    MakeChannel(channel: Channel) {
-      console.log("MakeChannel", channel);
+    UseChannel(channel: Channel) {
+      this.channel = channel;
     },
-    SetErrorDialog(error: string) {
-      this.ErrorDialogMessage = error;
+    MakeChannel(channel: Channel) {
+      this.channels.push(channel);
+      this.SetDialog("チャネルを作成しました。", 0);
+    },
+    SetDialog(error: string, type: number) {
+      this.DialogMessage = error;
+      this.DialogType = type;
       setTimeout(() => {
-        this.ErrorDialogMessage = null;
+        this.DialogMessage = null;
       }, 3000);
     },
   },
@@ -94,7 +100,7 @@ export default defineComponent({
   align-items: center;
   }
 }
-#ErrorDialog {
+#Dialog {
   $height: 100px;
   position: fixed;
   bottom: 1rem;

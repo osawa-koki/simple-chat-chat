@@ -31,7 +31,7 @@
           <div>{{ _channel.name }}</div>
           <div>{{ _channel.description }}</div>
           <div v-if="_channel.id === channel?.id">🌠 Now! 🌠</div>
-          <div v-else><button type="button" class="btn btn-outline-info">Use This 🐬</button></div>
+          <div v-else><button type="button" class="btn btn-outline-info" @click="$emit('UseChannel', _channel)">Use This 🐬</button></div>
         </template>
       </div>
     </div>
@@ -81,7 +81,23 @@ export default defineComponent({
       if (this.chanell_name_error !== null || this.chanell_description_error !== null) {
         return;
       }
-      this.$emit("MakeChannel", this.channel);
+      // GUIDを生成
+      const guid = () => {
+        const s4 = () => {
+          return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+      }
+      const new_channel = {
+        id: guid(),
+        name: this.name,
+        description: this.description,
+      } as Channel;
+      this.$emit("MakeChannel", new_channel);
+      this.name = "";
+      this.description = "";
     },
   },
 })
