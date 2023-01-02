@@ -13,4 +13,9 @@ type Channel = {
   description: string;
 };
 
-export type { Message, Channel };
+type User = {
+  id: string;
+  name: string;
+};
+
+export type { Message, Channel, User };

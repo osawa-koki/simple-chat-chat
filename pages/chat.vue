@@ -37,6 +37,7 @@ export default defineComponent({
       InsertError: null as string | null,
       DialogMessage: null as string | null,
       DialogType: 0 as number, // 0: Success, -1: Error
+      username: "",
       messages: [] as Message[],
       channel: template_channels[0] as Channel,
       channels: [...template_channels] as Channel[],
