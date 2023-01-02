@@ -64,6 +64,10 @@ export default defineComponent({
     },
     async MakeChannel(channel: Channel) {
       try {
+        if (this.channels.find((c) => c.id === channel.id)) {
+          this.SetDialog("既に存在するチャネルです。", -1);
+          return;
+        }
         this.channels.push(channel);
         await setDoc(doc(db, "channels", channel.id), channel);
         this.SetDialog("チャネルを作成しました。", 0);
