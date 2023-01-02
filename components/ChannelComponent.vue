@@ -28,6 +28,15 @@
         </div>
       </div>
       <hr />
+      <h2>👽 Import Channel</h2>
+      <div>
+        <label for="import_channel_id" class="form-label">Enter Channel ID</label>
+        <input id="import_channel_id" v-model="id" type="text" class="form-control" />
+        <div class="center box">
+          <button type="button" class="btn btn-info" @click="$emit('ImportChannel', id)">Import 🥺</button>
+        </div>
+      </div>
+      <hr />
       <h2>🐪 Channel List</h2>
       <div id="MyChannels">
         <template v-for="_channel in channels">
@@ -63,6 +72,7 @@ export default defineComponent({
     return {
       name: "",
       description: "",
+      id: "",
       chanell_name_error: null as string | null,
       chanell_description_error: null as string | null,
     }

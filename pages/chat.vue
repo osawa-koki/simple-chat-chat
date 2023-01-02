@@ -4,7 +4,7 @@
   <main>
     <ChatSetting :screen="screen" @SetScreen="SetScreen" />
     <WelcomeComponent v-if="screen === 0" />
-    <ChannelComponent v-if="screen === 2" :channel="channel" :channels="channels" @UseChannel="UseChannel" @MakeChannel="MakeChannel" @DeleteChannel="DeleteChannel" @SetDialog="SetDialog" />
+    <ChannelComponent v-if="screen === 2" :channel="channel" :channels="channels" @UseChannel="UseChannel" @MakeChannel="MakeChannel" @DeleteChannel="DeleteChannel" @ImportChannel="ImportChannel" @SetDialog="SetDialog" />
   </main>
   <div id="Dialog" role="alert" :class="`${DialogMessage !== null ? '' : 'hidden'} alert alert-${DialogType === 0 ? 'info' : 'danger'}`">
     <span>{{ DialogMessage }}</span>
@@ -16,7 +16,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc } from 'firebase/firestore/lite';
 
 import firebaseConfig from '~/firebaseConfig';
 
@@ -68,6 +68,21 @@ export default defineComponent({
         this.SetDialog("チャネルを作成しました。", 0);
       } catch (error) {
         this.SetDialog("チャネルの作成に失敗しました。", -1);
+      }
+    },
+    async ImportChannel(id: string) {
+      try {
+        const docRef = doc(db, "channels", id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const channel = docSnap.data() as Channel;
+          this.channels.push(channel);
+          this.SetDialog("チャネルをインポートしました。", 0);
+        } else {
+          this.SetDialog("チャネルが見つかりませんでした。", -1);
+        }
+      } catch (error) {
+        this.SetDialog("チャネルのインポートに失敗しました。", -1);
       }
     },
     DeleteChannel(channel: Channel) {
