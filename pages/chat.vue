@@ -17,18 +17,13 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc } from 'firebase/firestore/lite';
-
-import firebaseConfig from '~/firebaseConfig';
+import { getDoc, doc, setDoc, deleteDoc } from 'firebase/firestore/lite';
 
 import { Message, Channel, User, MyContext } from '~/src/interface';
 import { template_channels, template_user } from "~/src/templates";
 import const_name from "~/src/const_name";
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+import db from "~/src/firebase";
 
 let timeout: NodeJS.Timeout | null = null;
 
