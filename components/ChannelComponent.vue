@@ -10,6 +10,9 @@
         <div class="alert alert-info" role="alert">
           <i class="bi bi-broadcast-pin"></i>&nbsp;{{ channel.name }}
         </div>
+        <button type="button" class="btn btn-outline-secondary" @click="Copy">
+          <i class="bi bi-link"></i>&nbsp;Copy Channel ID
+        </button>
       </div>
       <hr />
       <h2>🐉 Add New Channel</h2>
@@ -99,6 +102,10 @@ export default defineComponent({
       this.$emit("SetDialog", `新規チャネル(${new_channel.name})を作成しました。`, 0);
       this.name = "";
       this.description = "";
+    },
+    Copy() {
+      navigator.clipboard.writeText(this.channel.id);
+      this.$emit("SetDialog", `チャネルID(${this.channel.name}...)をコピーしました。`, 0);
     },
   },
 });
