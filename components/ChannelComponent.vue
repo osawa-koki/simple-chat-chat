@@ -95,6 +95,7 @@ export default defineComponent({
         description: this.description,
       } as Channel;
       this.$emit("MakeChannel", new_channel);
+      this.$emit("SetDialog", `新規チャネル(${new_channel.name})を作成しました。`, 0);
       this.name = "";
       this.description = "";
     },

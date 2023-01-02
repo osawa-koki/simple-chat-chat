@@ -4,7 +4,7 @@
   <main>
     <ChatSetting :screen="screen" @SetScreen="SetScreen" />
     <WelcomeComponent v-if="screen === 0" />
-    <ChannelComponent v-if="screen === 2" :channel="channel" :channels="channels" @UseChannel="UseChannel" @MakeChannel="MakeChannel" />
+    <ChannelComponent v-if="screen === 2" :channel="channel" :channels="channels" @UseChannel="UseChannel" @MakeChannel="MakeChannel" @SetDialog="SetDialog" />
   </main>
   <div id="Dialog" role="alert" :class="`${DialogMessage !== null ? '' : 'hidden'} alert alert-${DialogType === 0 ? 'info' : 'danger'}`">
     <span>{{ DialogMessage }}</span>
