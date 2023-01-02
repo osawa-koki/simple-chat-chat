@@ -54,7 +54,6 @@ export default defineComponent({
   },
   methods: {
     SetScreen(screen: number) {
-      console.log("SetScreen", screen);
       this.screen = screen;
     },
     UseChannel(channel: Channel) {
