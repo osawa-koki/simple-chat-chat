@@ -81,7 +81,6 @@ export default defineComponent({
       if (this.chanell_name_error !== null || this.chanell_description_error !== null) {
         return;
       }
-      // GUIDを生成
       const guid = () => {
         const s4 = () => {
           return Math.floor((1 + Math.random()) * 0x10000)
