@@ -27,6 +27,8 @@ import { template_channels } from "~/src/templates";
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+let timeout: NodeJS.Timeout | null = null;
+
 export default defineComponent({
   name: "ChatPage",
   data() {
@@ -72,6 +74,8 @@ export default defineComponent({
       // テンプレチャネルは削除できない
       if (template_channels.find((c) => c.id === channel.id)) {
         this.SetDialog("テンプレートチャネルは削除できません。", -1);
+        console.log(channel.id);
+
         return;
       }
       try {
@@ -85,7 +89,10 @@ export default defineComponent({
     SetDialog(error: string, type: number) {
       this.DialogMessage = error;
       this.DialogType = type;
-      setTimeout(() => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = setTimeout(() => {
         this.DialogMessage = null;
       }, 3000);
     },
