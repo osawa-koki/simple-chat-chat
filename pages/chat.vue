@@ -5,6 +5,7 @@
     <ChatSetting :screen="screen" @SetScreen="SetScreen" />
     <WelcomeComponent v-if="screen === 0" />
     <ChannelComponent v-if="screen === 2" :channel="channel" :channels="channels" @UseChannel="UseChannel" @MakeChannel="MakeChannel" @DeleteChannel="DeleteChannel" @ImportChannel="ImportChannel" @SetDialog="SetDialog" />
+    <ProfileComponent v-if="screen === 3" :username="username" :comment="comment" />
   </main>
   <div id="Dialog" role="alert" :class="`${DialogMessage !== null ? '' : 'hidden'} alert alert-${DialogType === 0 ? 'info' : 'danger'}`">
     <span>{{ DialogMessage }}</span>
@@ -37,7 +38,8 @@ export default defineComponent({
       InsertError: null as string | null,
       DialogMessage: null as string | null,
       DialogType: 0 as number, // 0: Success, -1: Error
-      username: "",
+      username: "Mr. Tako",
+      comment: "実はわたくし、脳が9個あるんです。\nメインパートにひとつと、各足にひとつずつです。",
       messages: [] as Message[],
       channel: template_channels[0] as Channel,
       channels: [...template_channels] as Channel[],
