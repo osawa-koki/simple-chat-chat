@@ -80,6 +80,7 @@ export default defineComponent({
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           data.id = doc.id;
+          data.date = data.date.toDate();
           messages.push(data as Message);
         });
         this.messages = messages.sort((a, b) => a.date > b.date ? -1 : 1);
@@ -132,6 +133,7 @@ export default defineComponent({
           docs.forEach((doc) => {
             const data = doc.data();
             data.id = doc.id;
+            data.date = data.date.toDate();
             messages.push(data as Message);
           });
           this.messages = messages.sort((a, b) => a.date > b.date ? -1 : 1);
