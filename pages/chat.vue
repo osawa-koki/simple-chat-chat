@@ -39,7 +39,7 @@ export default defineComponent({
       DialogType: 0 as number, // 0: Success, -1: Error
       messages: [] as Message[],
       channel: template_channels[0] as Channel,
-      channels: template_channels as Channel[],
+      channels: [...template_channels] as Channel[],
     };
   },
   computed: {
@@ -72,9 +72,9 @@ export default defineComponent({
     },
     DeleteChannel(channel: Channel) {
       // テンプレチャネルは削除できない
+      console.log(template_channels);
       if (template_channels.find((c) => c.id === channel.id)) {
         this.SetDialog("テンプレートチャネルは削除できません。", -1);
-        console.log(channel.id);
 
         return;
       }
