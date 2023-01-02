@@ -14,6 +14,9 @@
         <p class="text">{{ message.text }}</p>
         <div class="username">{{ message.username }}</div>
         <div class="date">{{ message.date }}</div>
+        <i v-if="message.user_id === user.id" class="bi bi-x delete-message"></i>
+        <div>{{ message.user_id }}</div>
+        <div>{{ user.id }}</div>
       </div>
     </div>
   </div>
@@ -77,12 +80,9 @@ export default defineComponent({
         const querySnapshot = await getDocs(q);
         const messages = [] as Message[];
         querySnapshot.forEach((doc) => {
-          messages.push({
-            id: doc.id,
-            text: doc.data().text,
-            username: doc.data().username,
-            date: doc.data().date.toDate().toLocaleString(),
-          } as Message);
+          const data = doc.data();
+          data.id = doc.id;
+          messages.push(data as Message);
         });
         this.messages = messages.sort((a, b) => a.date > b.date ? -1 : 1);
       } catch (error) {
@@ -96,6 +96,7 @@ export default defineComponent({
         const message: Message = {
           id,
           text: this.text,
+          user_id: this.user.id,
           username: this.user.name,
           channel_id: this.channel_selected,
           date: new Date(),
@@ -169,6 +170,7 @@ export default defineComponent({
     width: 0;
   }
   .MessageUnit {
+    position: relative;
     display: grid;
     grid-template-columns: 1fr 1fr;
     margin: 0.3rem 0;
@@ -193,6 +195,13 @@ export default defineComponent({
       grid-column: 2 / 3;
       text-align: right;
       font-size: 0.7rem;
+    }
+    .delete-message {
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 0.5rem;
+      color: red;
     }
   }
 }

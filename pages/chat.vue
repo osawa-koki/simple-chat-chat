@@ -22,6 +22,7 @@ import { getDoc, doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { Message, Channel, User, MyContext } from '~/src/interface';
 import { template_channels, template_user } from "~/src/templates";
 import const_name from "~/src/const_name";
+import guid from "~/src/guid";
 
 import db from "~/src/firebase";
 
@@ -51,6 +52,7 @@ export default defineComponent({
           this.user = docSnap.data() as User;
         } else {
           this.user = template_user;
+          this.user.id = guid();
         }
       });
       user_context.channel_ids.forEach(async (channel_id) => {
@@ -62,6 +64,8 @@ export default defineComponent({
       });
     } else {
       this.user = template_user;
+      this.user.id = guid();
+      this.Save();
     }
   },
   methods: {

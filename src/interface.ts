@@ -3,6 +3,7 @@
 type Message = {
   id: string;
   channel_id: string;
+  user_id: string;
   username: string;
   text: string;
   date: Date;
