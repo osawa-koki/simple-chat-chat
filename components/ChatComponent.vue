@@ -68,49 +68,15 @@ export default defineComponent({
   methods: {
     SelectedChange(event: Event) {
       this.Unsubscribe();
-      this.$emit('UseChannel', event?.target?.value);
+      this.$emit('UseChannel', (event?.target as HTMLSelectElement)?.value);
       this.Subscribe();
     },
     async ReadMessages() {
-      const q = query(collection(db, "messages", this.channel_selected, "messages"), where("is_valid", "==", true));
-      const querySnapshot = await getDocs(q);
-      const messages = [] as Message[];
-      querySnapshot.forEach((doc) => {
-        messages.push({
-          id: doc.id,
-          text: doc.data().text,
-          username: doc.data().username,
-          date: doc.data().date.toDate().toLocaleString(),
-        } as Message);
-      });
-      this.messages = messages.sort((a, b) => a.date > b.date ? -1 : 1);
-    },
-    async SendMessage() {
-      if (this.text === '') return;
-      const id = guid();
-      const message: Message = {
-        id,
-        text: this.text,
-        username: this.user.name,
-        channel_id: this.channel_selected,
-        date: new Date(),
-        is_valid: true,
-      };
-      // ドキュメントを取得
-      const docRef = doc(db, "messages", this.channel_selected);
-      // ドキュメントが存在しない場合は作成
-      await setDoc(docRef, {
-        id: this.channel_selected,
-        name: this.channel_selected,
-      }, { merge: true });
-      // メッセージを追加
-      await setDoc(doc(db, "messages", this.channel_selected, "messages", id), message);
-      this.text = '';
-    },
-    Subscribe() {
-      this.unsub = onSnapshot(collection(db, "messages", this.channel_selected, "messages"), (docs) => {
+      try {
+        const q = query(collection(db, "messages", this.channel_selected, "messages"), where("is_valid", "==", true));
+        const querySnapshot = await getDocs(q);
         const messages = [] as Message[];
-        docs.forEach((doc) => {
+        querySnapshot.forEach((doc) => {
           messages.push({
             id: doc.id,
             text: doc.data().text,
@@ -119,12 +85,62 @@ export default defineComponent({
           } as Message);
         });
         this.messages = messages.sort((a, b) => a.date > b.date ? -1 : 1);
-      });
+      } catch (error) {
+        this.$emit("メッセージの取得に失敗しました。");
+      }
+    },
+    async SendMessage() {
+      try {
+        if (this.text === '') return;
+        const id = guid();
+        const message: Message = {
+          id,
+          text: this.text,
+          username: this.user.name,
+          channel_id: this.channel_selected,
+          date: new Date(),
+          is_valid: true,
+        };
+        // ドキュメントを取得
+        const docRef = doc(db, "messages", this.channel_selected);
+        // ドキュメントが存在しない場合は作成
+        await setDoc(docRef, {
+          id: this.channel_selected,
+          name: this.channel_selected,
+        }, { merge: true });
+        // メッセージを追加
+        await setDoc(doc(db, "messages", this.channel_selected, "messages", id), message);
+        this.text = '';
+      } catch (error) {
+        this.$emit("メッセージの送信に失敗しました。");
+      }
+    },
+    Subscribe() {
+      try {
+        this.unsub = onSnapshot(collection(db, "messages", this.channel_selected, "messages"), (docs) => {
+          const messages = [] as Message[];
+          docs.forEach((doc) => {
+            messages.push({
+              id: doc.id,
+              text: doc.data().text,
+              username: doc.data().username,
+              date: doc.data().date.toDate().toLocaleString(),
+            } as Message);
+          });
+          this.messages = messages.sort((a, b) => a.date > b.date ? -1 : 1);
+        });
+      } catch (error) {
+        this.$emit("メッセージの監視に失敗しました。");
+      }
     },
     Unsubscribe() {
-      if (this.unsub) {
-        this.unsub();
-        this.unsub = null;
+      try {
+        if (this.unsub) {
+          this.unsub();
+          this.unsub = null;
+        }
+      } catch (error) {
+        this.$emit("メッセージの監視の解除に失敗しました。");
       }
     },
   }

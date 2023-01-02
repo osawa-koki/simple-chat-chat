@@ -54,7 +54,6 @@ export default defineComponent({
     }
   },
   async mounted() {
-
     // ローカルストレージからユーザー情報を取得
     const user_context_raw = localStorage.getItem(const_name.local_storage_name);
     if (user_context_raw) {
@@ -82,7 +81,11 @@ export default defineComponent({
       this.screen = screen;
     },
     UseChannel(channel_id: string) {
-      this.channel = this.channels.find((c) => c.id === date) as Channel;
+      try {
+        this.channel = this.channels.find((c) => c.id === channel_id) as Channel;
+      } catch (error) {
+        this.SetDialog("チャネルの取得に失敗しました。", -1);
+      }
     },
     async MakeChannel(channel: Channel) {
       try {
@@ -115,28 +118,36 @@ export default defineComponent({
       }
     },
     DeleteChannel(channel_id: string) {
-      // テンプレチャネルは削除できない
-      if (template_channels.find((c) => c.id === channel_id)) {
-        this.SetDialog("テンプレートチャネルは削除できません。", -1);
-        return;
-      }
       try {
-        deleteDoc(doc(db, "channels", channel_id));
-        this.channels = this.channels.filter((c) => c.id !== channel_id);
-        this.SetDialog("チャネルを削除しました。", 0);
+        // テンプレチャネルは削除できない
+        if (template_channels.find((c) => c.id === channel_id)) {
+          this.SetDialog("テンプレートチャネルは削除できません。", -1);
+          return;
+        }
+        try {
+          deleteDoc(doc(db, "channels", channel_id));
+          this.channels = this.channels.filter((c) => c.id !== channel_id);
+          this.SetDialog("チャネルを削除しました。", 0);
+        } catch (error) {
+          this.SetDialog("チャネルの削除に失敗しました。", -1);
+        }
       } catch (error) {
         this.SetDialog("チャネルの削除に失敗しました。", -1);
       }
     },
     SetProfile(user: User) {
-      this.user = {
-        id: this.user.id,
-        name: user.name,
-        comment: user.comment,
-      };
-      setDoc(doc(db, "users", this.user.id), this.user);
-      this.Save();
-      this.SetDialog("プロフィールを更新しました。", 0);
+      try {
+        this.user = {
+          id: this.user.id,
+          name: user.name,
+          comment: user.comment,
+        };
+        setDoc(doc(db, "users", this.user.id), this.user);
+        this.Save();
+        this.SetDialog("プロフィールを更新しました。", 0);
+      } catch (error) {
+        this.SetDialog("プロフィールの更新に失敗しました。", -1);
+      }
     },
     SetDialog(error: string, type: number) {
       this.DialogMessage = error;
@@ -149,11 +160,15 @@ export default defineComponent({
       }, 3000);
     },
     Save() {
-      const user_context: MyContext = {
-        user_id: this.user.id,
-        channel_ids: this.channels.map((c) => c.id),
-      };
-      localStorage.setItem(const_name.local_storage_name, JSON.stringify(user_context));
+      try {
+        const user_context: MyContext = {
+          user_id: this.user.id,
+          channel_ids: this.channels.map((c) => c.id),
+        };
+        localStorage.setItem(const_name.local_storage_name, JSON.stringify(user_context));
+      } catch (error) {
+        this.SetDialog("保存に失敗しました。", -1);
+      }
     },
   },
 })
