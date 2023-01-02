@@ -30,7 +30,7 @@ export default defineComponent({
   name: 'WelcomeComponent',
   data() {
     return {
-      seed: 0,
+      seed: Math.floor(Math.random() * 100),
       randoms,
     }
   },
