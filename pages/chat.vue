@@ -5,7 +5,7 @@
     <ChatSetting :screen="screen" @SetScreen="SetScreen" />
     <WelcomeComponent v-if="screen === 0" />
     <ChannelComponent v-if="screen === 2" :channel="channel" :channels="channels" @UseChannel="UseChannel" @MakeChannel="MakeChannel" @DeleteChannel="DeleteChannel" @ImportChannel="ImportChannel" @SetDialog="SetDialog" />
-    <ProfileComponent v-if="screen === 3" :user="user" @SetProfile="SetProfile" />
+    <ProfileComponent v-if="screen === 3" :user="user" @SetProfile="SetProfile" @SetDialog="SetDialog" />
   </main>
   <div id="Dialog" role="alert" :class="`${DialogMessage !== null ? '' : 'hidden'} alert alert-${DialogType === 0 ? 'info' : 'danger'}`">
     <span>{{ DialogMessage }}</span>
@@ -23,8 +23,7 @@ import firebaseConfig from '~/firebaseConfig';
 
 import { Message, Channel, User, MyContext } from '~/src/interface';
 import { template_channels, template_user } from "~/src/templates";
-import guid from "~/src/guid";
-import { channel } from "diagnostics_channel";
+import const_name from "~/src/const_name";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -61,7 +60,7 @@ export default defineComponent({
   async mounted() {
 
     // ローカルストレージからユーザー情報を取得
-    const user_context_raw = localStorage.getItem("my_context");
+    const user_context_raw = localStorage.getItem(const_name.local_storage_name);
     if (user_context_raw) {
       const user_context = JSON.parse(user_context_raw) as MyContext;
       await getDoc(doc(db, "users", user_context.user_id)).then((docSnap) => {
@@ -158,7 +157,7 @@ export default defineComponent({
         user_id: this.user.id,
         channel_ids: this.channels.map((c) => c.id),
       };
-      localStorage.setItem("my_context", JSON.stringify(user_context));
+      localStorage.setItem(const_name.local_storage_name, JSON.stringify(user_context));
     },
   },
 })

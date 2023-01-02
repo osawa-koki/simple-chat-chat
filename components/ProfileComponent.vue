@@ -22,12 +22,15 @@
       <div class="center box">
         <button type="button" class="btn btn-outline-success" @click="SetProfile">Set 🐠</button>
       </div>
+      <hr />
+      <button type="button" class="btn btn-secondary" @click="DeleteStorageInfo">ブラウザに保存されている情報を全て削除する 🐬🐬🐬</button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import const_name from "~/src/const_name";
 
 import { User } from '~/src/interface';
 
@@ -55,6 +58,18 @@ export default defineComponent({
         name: this.name,
         comment: this.comment,
       } as User);
+    },
+    DeleteStorageInfo() {
+      try {
+        if (confirm("ブラウザに保存されている情報を全て削除します。よろしいですか？") === false) return;
+        localStorage.removeItem(const_name.local_storage_name);
+        this.$emit('SetDialog', "ブラウザに保存されている情報を削除しました。", 0);
+      } catch (e) {
+        this.$emit('SetDialog', {
+          message: "ブラウザに保存されている情報を削除できませんでした。",
+          type: 1,
+        });
+      }
     },
   },
 });
