@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { collection, query, where, getDocs, setDoc, doc } from "firebase/firestore";
+import { collection, query, where, getDocs, setDoc, doc, onSnapshot } from "firebase/firestore";
 import db from "~/src/firebase";
 
 import { Channel, Message, User } from "~/src/interface";
@@ -59,6 +59,7 @@ export default defineComponent({
   mounted() {
     this.channel_selected = this.channel.id;
     this.ReadMessages();
+    this.Subscribe();
   },
   methods: {
     async ReadMessages() {
@@ -98,6 +99,9 @@ export default defineComponent({
       this.text = '';
     },
     Subscribe() {
+      const unsub = onSnapshot(doc(db, "messages", this.channel_selected), (doc) => {
+        console.log("Current data: ", doc.data());
+      });
     }
   }
 })
