@@ -3,7 +3,7 @@
   <div id="Setting" :class="isOpen ? 'on' : 'off'">
     <div id="Content">
       <div v-for="feature in features" id="Features">
-        <button type="button" :class="`${screen === feature.id ? 'btn-primary' : ''} btn`" @click="$emit('SetScreen', feature.id)">{{ feature.name }}</button>
+        <button type="button" :class="`${screen === feature.id ? 'btn-primary' : ''} btn`" @click="Close(); $emit('SetScreen', feature.id)">{{ feature.name }}</button>
       </div>
     </div>
     <div id="Fixed">
