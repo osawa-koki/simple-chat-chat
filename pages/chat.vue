@@ -41,18 +41,6 @@ export default defineComponent({
       channels: [...template_channels] as Channel[],
     };
   },
-  computed: {
-    Date2String() {
-      return (date: Date) => {
-        try {
-          return date.toLocaleString();
-        }
-        catch (error) {
-          return "????/??/?? ??:??:??";
-        }
-      };
-    }
-  },
   async mounted() {
     // ローカルストレージからユーザー情報を取得
     const user_context_raw = localStorage.getItem(const_name.local_storage_name);
