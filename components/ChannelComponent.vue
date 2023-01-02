@@ -100,7 +100,7 @@ export default defineComponent({
       this.description = "";
     },
   },
-})
+});
 </script>
 
 <style lang="scss" scoped>
