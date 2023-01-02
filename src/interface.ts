@@ -19,4 +19,9 @@ type User = {
   comment: string;
 };
 
-export type { Message, Channel, User };
+type MyContext = {
+  user_id: string;
+  channel_ids: string[];
+};
+
+export type { Message, Channel, User, MyContext };

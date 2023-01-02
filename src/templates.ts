@@ -1,5 +1,6 @@
 
 import { Channel } from '~/src/interface';
+import guid from '~/src/guid';
 
 const template_channels: Channel[] = [
   {
@@ -19,4 +20,10 @@ const template_channels: Channel[] = [
   },
 ];
 
-export { template_channels };
+const template_user = {
+  id: guid(),
+  name: "Mr. Tako",
+  comment: "実はわたくし、脳が9個あるんです。\nメインパートにひとつと、各足にひとつずつです。",
+};
+
+export { template_channels, template_user };

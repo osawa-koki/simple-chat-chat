@@ -21,8 +21,10 @@ import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc } fro
 
 import firebaseConfig from '~/firebaseConfig';
 
-import { Message, Channel, User } from '~/src/interface';
-import { template_channels } from "~/src/templates";
+import { Message, Channel, User, MyContext } from '~/src/interface';
+import { template_channels, template_user } from "~/src/templates";
+import guid from "~/src/guid";
+import { channel } from "diagnostics_channel";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -38,11 +40,7 @@ export default defineComponent({
       InsertError: null as string | null,
       DialogMessage: null as string | null,
       DialogType: 0 as number, // 0: Success, -1: Error
-      user: {
-        id: "0",
-        name: "Mr. Tako",
-        comment: "実はわたくし、脳が9個あるんです。\nメインパートにひとつと、各足にひとつずつです。",
-      } as User,
+      user: {} as User,
       messages: [] as Message[],
       channel: template_channels[0] as Channel,
       channels: [...template_channels] as Channel[],
@@ -60,10 +58,29 @@ export default defineComponent({
       };
     }
   },
-  mounted() {
-    this.SetScreen(0);
-    this.SetDialog("チャットを開始します。", 0);
-    this.SetDialog("チャネルを読み込みます。", 0);
+  async mounted() {
+
+    // ローカルストレージからユーザー情報を取得
+    const user_context_raw = localStorage.getItem("my_context");
+    if (user_context_raw) {
+      const user_context = JSON.parse(user_context_raw) as MyContext;
+      await getDoc(doc(db, "users", user_context.user_id)).then((docSnap) => {
+        if (docSnap.exists()) {
+          this.user = docSnap.data() as User;
+        } else {
+          this.user = template_user;
+        }
+      });
+      user_context.channel_ids.forEach(async (channel_id) => {
+        await getDoc(doc(db, "channels", channel_id)).then((docSnap) => {
+          if (docSnap.exists()) {
+            this.channels.push(docSnap.data() as Channel);
+          }
+        });
+      });
+    } else {
+      this.user = template_user;
+    }
   },
   methods: {
     SetScreen(screen: number) {
@@ -80,6 +97,7 @@ export default defineComponent({
         }
         this.channels.push(channel);
         await setDoc(doc(db, "channels", channel.id), channel);
+        this.Save();
         this.SetDialog("チャネルを作成しました。", 0);
       } catch (error) {
         this.SetDialog("チャネルの作成に失敗しました。", -1);
@@ -92,6 +110,7 @@ export default defineComponent({
         if (docSnap.exists()) {
           const channel = docSnap.data() as Channel;
           this.channels.push(channel);
+          this.Save();
           this.SetDialog("チャネルをインポートしました。", 0);
         } else {
           this.SetDialog("チャネルが見つかりませんでした。", -1);
@@ -120,6 +139,8 @@ export default defineComponent({
         name: user.name,
         comment: user.comment,
       };
+      setDoc(doc(db, "users", this.user.id), this.user);
+      this.Save();
       this.SetDialog("プロフィールを更新しました。", 0);
     },
     SetDialog(error: string, type: number) {
@@ -131,6 +152,13 @@ export default defineComponent({
       timeout = setTimeout(() => {
         this.DialogMessage = null;
       }, 3000);
+    },
+    Save() {
+      const user_context: MyContext = {
+        user_id: this.user.id,
+        channel_ids: this.channels.map((c) => c.id),
+      };
+      localStorage.setItem("my_context", JSON.stringify(user_context));
     },
   },
 })

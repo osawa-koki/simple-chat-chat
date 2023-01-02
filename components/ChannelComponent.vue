@@ -55,6 +55,7 @@
 import { defineComponent } from "vue";
 
 import { Channel } from '~/src/interface';
+import guid from "~/src/guid";
 
 export default defineComponent({
   name: 'ChannelComponent',
@@ -94,14 +95,6 @@ export default defineComponent({
       }
       if (this.chanell_name_error !== null || this.chanell_description_error !== null) {
         return;
-      }
-      const guid = () => {
-        const s4 = () => {
-          return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
       }
       const new_channel = {
         id: guid(),
