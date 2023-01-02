@@ -4,7 +4,7 @@
     <main>
       <div class="Central">
         <h1>Hello simple-chat-chat 💓💓💓</h1>
-        <img :src="$router.options.base + 'favicon.ico'" alt="" />
+        <img :src="$router.options.base + 'favicon.ico'" alt="Logo" />
         <ul id="Contents">
           <li v-for="page in pages" :key="page.name">
             <nuxt-link :to="page.path">
