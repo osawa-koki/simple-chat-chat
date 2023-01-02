@@ -3,6 +3,7 @@
   <div>
     <main>
       <ChatSetting :screen="screen" @SetScreen="SetScreen" />
+      <WelcomeComponent v-if="screen === 0" />
     </main>
     <div id="ErrorDialog" class="alert alert-danger" role="alert" :class="ErrorDialogMessage !== null ? '' : 'hidden'">
       <span>{{ ErrorDialogMessage }}</span>
@@ -19,6 +20,7 @@ import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } from 'fireb
 import firebaseConfig from '~/firebaseConfig';
 
 import pages from '~/pages';
+import WelcomeComponent from "~/components/WelcomeComponent.vue";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -32,45 +34,46 @@ type Message = {
 };
 
 export default defineComponent({
-  name: 'FirestorePage',
-  data() {
-    return {
-      screen: 0,
-      InsertError: null as string | null,
-      ErrorDialogMessage: null as string | null,
-      sending : false,
-      reading : false,
-      deleting : false,
-      pages,
-      name: 'osawa-koki',
-      text: 'Hello simple-chat-chat 💓',
-      messages: [] as Message[],
-    }
-  },
-  computed: {
-    Date2String() {
-      return (date: Date) => {
-        try {
-          return date.toLocaleString();
-        } catch (error) {
-          return '????/??/?? ??:??:??';
+    name: "FirestorePage",
+    data() {
+        return {
+            screen: 0,
+            InsertError: null as string | null,
+            ErrorDialogMessage: null as string | null,
+            sending: false,
+            reading: false,
+            deleting: false,
+            pages,
+            name: "osawa-koki",
+            text: "Hello simple-chat-chat 💓",
+            messages: [] as Message[],
+        };
+    },
+    computed: {
+        Date2String() {
+            return (date: Date) => {
+                try {
+                    return date.toLocaleString();
+                }
+                catch (error) {
+                    return "????/??/?? ??:??:??";
+                }
+            };
         }
-      }
-    }
-  },
-  methods: {
-    SetScreen(screen: number) {
-      console.log('SetScreen', screen);
-
-      this.screen = screen;
     },
-    SetErrorDialog(error: string) {
-      this.ErrorDialogMessage = error;
-      setTimeout(() => {
-        this.ErrorDialogMessage = null;
-      }, 3000);
+    methods: {
+        SetScreen(screen: number) {
+            console.log("SetScreen", screen);
+            this.screen = screen;
+        },
+        SetErrorDialog(error: string) {
+            this.ErrorDialogMessage = error;
+            setTimeout(() => {
+                this.ErrorDialogMessage = null;
+            }, 3000);
+        },
     },
-  }
+    components: { WelcomeComponent }
 })
 </script>
 

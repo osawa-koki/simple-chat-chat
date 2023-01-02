@@ -57,6 +57,7 @@ export default defineComponent({
   left: 0;
   margin: 0;
   background-color: RGBA(33, 37, 41, var(--bs-bg-opacity, 1));
+  z-index: 99;
   @include media-breakpoint-down(md) {
     height: 0;
     &.on {
