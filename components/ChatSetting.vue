@@ -22,11 +22,7 @@ export default defineComponent({
   props: {
     screen: {
       type: Number,
-      default: 0,
-      // 0 -> デフォルト
-      // 1 -> チャット
-      // 2 -> チャネル
-      // 3 -> プロフィール
+      required: true,
     },
   },
   data() {
