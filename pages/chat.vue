@@ -59,9 +59,14 @@ export default defineComponent({
     UseChannel(channel: Channel) {
       this.channel = channel;
     },
-    MakeChannel(channel: Channel) {
-      this.channels.push(channel);
-      this.SetDialog("チャネルを作成しました。", 0);
+    async MakeChannel(channel: Channel) {
+      try {
+        this.channels.push(channel);
+        await setDoc(doc(db, "channels", channel.id), channel);
+        this.SetDialog("チャネルを作成しました。", 0);
+      } catch (error) {
+        this.SetDialog("チャネルの作成に失敗しました。", -1);
+      }
     },
     DeleteChannel(channel: Channel) {
       if (window.confirm("本当に削除しますか？") === false) return;
