@@ -5,6 +5,11 @@
     <select v-model="channel_selected" class="form-select" aria-label="Select Channel" @input="$emit('UseChannel', $event?.target?.value)">
       <option v-for="_channel in channels" :key="_channel.id" :value="_channel.id">{{ _channel.name }}</option>
     </select>
+    <div id="MessageDiv">
+      <textarea v-model="message" class="form-control" rows="3"></textarea>
+      <button type="button" class="btn btn-outline-primary">Send <i class="bi bi-send-fill"></i></button>
+    </div>
+    <hr />
   </div>
 </template>
 
@@ -31,6 +36,7 @@ export default defineComponent({
   data: function () {
     return {
       channel_selected: '',
+      message: '',
     }
   },
   mounted() {
@@ -42,4 +48,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import "../node_modules/bootstrap/scss/bootstrap";
 
+#MessageDiv {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  button {
+    margin-left: 1rem;
+  }
+}
 </style>
