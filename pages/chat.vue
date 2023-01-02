@@ -87,10 +87,8 @@ export default defineComponent({
     },
     DeleteChannel(channel: Channel) {
       // テンプレチャネルは削除できない
-      console.log(template_channels);
       if (template_channels.find((c) => c.id === channel.id)) {
         this.SetDialog("テンプレートチャネルは削除できません。", -1);
-
         return;
       }
       try {
