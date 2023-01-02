@@ -4,6 +4,14 @@ Firebase(Cloud Firestore)を使用した簡単なチャットアプリ。
 
 ![成果物](./.development/img/fruit.gif)  
 
+## 開発環境
+
+| 機能 | バージョン |
+| ---- | ---- |
+| Windows | 11 Home |
+| firebase | 11.19.0 |
+| Node.js | 19.3.0 |
+
 ## 実行方法
 
 ```shell
