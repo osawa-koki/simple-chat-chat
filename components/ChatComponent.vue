@@ -6,7 +6,7 @@
     </select>
     <div id="MessageDiv">
       <textarea v-model="text" class="form-control" rows="3"></textarea>
-      <button type="button" class="btn btn-outline-primary">Send <i class="bi bi-send-fill"></i></button>
+      <button type="button" class="btn btn-outline-primary" @click="SendMessage">Send <i class="bi bi-send-fill"></i></button>
     </div>
     <hr />
     <div id="ChatContent">
@@ -49,6 +49,12 @@ export default defineComponent({
       messages: [] as Message[],
     }
   },
+  watch: {
+    channel_selected: function () {
+      this.messages = [];
+      this.ReadMessages();
+    }
+  },
   mounted() {
     this.channel_selected = this.channel.id;
     this.ReadMessages();
@@ -67,7 +73,7 @@ export default defineComponent({
         } as Message);
       });
     }
-  },
+  }
 })
 </script>
 
