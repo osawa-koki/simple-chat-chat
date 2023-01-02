@@ -60,6 +60,11 @@ export default defineComponent({
       };
     }
   },
+  mounted() {
+    this.SetScreen(0);
+    this.SetDialog("チャットを開始します。", 0);
+    this.SetDialog("チャネルを読み込みます。", 0);
+  },
   methods: {
     SetScreen(screen: number) {
       this.screen = screen;
