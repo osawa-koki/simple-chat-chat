@@ -23,7 +23,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
-let interval: Timer;
+let interval: NodeJS.Timer;
 const randoms = Array.from({ length: 390 }, () => Math.floor(Math.random() * 100));
 
 export default defineComponent({
