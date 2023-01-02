@@ -28,10 +28,11 @@
       <h2>🐪 Channel List</h2>
       <div id="MyChannels">
         <template v-for="_channel in channels">
-          <div>{{ _channel.name }}</div>
-          <div>{{ _channel.description }}</div>
-          <div v-if="_channel.id === channel?.id">🌠 Now! 🌠</div>
-          <div v-else><button type="button" class="btn btn-outline-info" @click="$emit('UseChannel', _channel)">Use This 🐬</button></div>
+          <div class="name">{{ _channel.name }}</div>
+          <div class="description">{{ _channel.description }}</div>
+          <div v-if="_channel.id === channel?.id" class="select">🌠 Now! 🌠</div>
+          <div v-else class="select"><button type="button" class="btn btn-outline-info" @click="$emit('UseChannel', _channel)">Use This 🐬</button></div>
+          <div class="delete"><button type="button" class="btn btn-outline-danger" @click="$emit('DeleteChannel', _channel)">Delete This 💣</button></div>
         </template>
       </div>
     </div>
@@ -104,14 +105,25 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../node_modules/bootstrap/scss/bootstrap";
+
 #Central {
 
   #MyChannels {
     display: grid;
-    grid-template-columns: minmax(5rem, 15rem) minmax(10rem, 30rem) minmax(5rem, 10rem);
-    div {
-      padding-bottom: 1rem;
-      border-bottom: 1px lightskyblue solid;
+    @include media-breakpoint-down(md) {
+      grid-template-columns: repeat(2, 1fr);
+      .select, .delete {
+        padding-bottom: 1rem;
+        border-bottom: 1px lightskyblue solid;
+      }
+    }
+    @include media-breakpoint-up(md) {
+      grid-template-columns: minmax(5rem, 15rem) minmax(10rem, 30rem) minmax(5rem, 10rem) minmax(5rem, 10rem);
+      div {
+        padding-bottom: 1rem;
+        border-bottom: 1px lightskyblue solid;
+      }
     }
   }
 }

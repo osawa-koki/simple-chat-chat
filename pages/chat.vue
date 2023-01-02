@@ -4,7 +4,7 @@
   <main>
     <ChatSetting :screen="screen" @SetScreen="SetScreen" />
     <WelcomeComponent v-if="screen === 0" />
-    <ChannelComponent v-if="screen === 2" :channel="channel" :channels="channels" @UseChannel="UseChannel" @MakeChannel="MakeChannel" @SetDialog="SetDialog" />
+    <ChannelComponent v-if="screen === 2" :channel="channel" :channels="channels" @UseChannel="UseChannel" @MakeChannel="MakeChannel" @DeleteChannel="DeleteChannel" @SetDialog="SetDialog" />
   </main>
   <div id="Dialog" role="alert" :class="`${DialogMessage !== null ? '' : 'hidden'} alert alert-${DialogType === 0 ? 'info' : 'danger'}`">
     <span>{{ DialogMessage }}</span>
@@ -72,6 +72,10 @@ export default defineComponent({
       this.channels.push(channel);
       this.SetDialog("チャネルを作成しました。", 0);
     },
+    DeleteChannel(channel: Channel) {
+      this.channels = this.channels.filter((c) => c.id !== channel.id);
+      this.SetDialog("チャネルを削除しました。", 0);
+    },
     SetDialog(error: string, type: number) {
       this.DialogMessage = error;
       this.DialogType = type;
@@ -84,6 +88,19 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+main {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  @include media-breakpoint-up(md) {
+    margin-left: 200px;
+  }
+  @include media-breakpoint-up(xl) {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
 #Messages {
   margin-top: 1rem;
   display: grid;
