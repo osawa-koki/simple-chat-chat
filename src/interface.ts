@@ -2,7 +2,8 @@
 
 type Message = {
   id: string;
-  name: string;
+  channel_id: string;
+  username: string;
   text: string;
   date: Date;
 };

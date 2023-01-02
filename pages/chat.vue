@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { getDoc, doc, setDoc, deleteDoc } from 'firebase/firestore/lite';
+import { getDoc, doc, setDoc, deleteDoc } from 'firebase/firestore';
 
 import { Message, Channel, User, MyContext } from '~/src/interface';
 import { template_channels, template_user } from "~/src/templates";
@@ -82,7 +82,7 @@ export default defineComponent({
       this.screen = screen;
     },
     UseChannel(channel_id: string) {
-      this.channel = this.channels.find((c) => c.id === channel_id) as Channel;
+      this.channel = this.channels.find((c) => c.id === date) as Channel;
     },
     async MakeChannel(channel: Channel) {
       try {
