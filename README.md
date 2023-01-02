@@ -2,6 +2,8 @@
 
 Firebase(Cloud Firestore)を使用した簡単なチャットアプリ。  
 
+![成果物](./.development/img/fruit.webp)  
+
 ## 実行方法
 
 ```shell
