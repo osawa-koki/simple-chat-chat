@@ -14,9 +14,7 @@
         <p class="text">{{ message.text }}</p>
         <div class="username">{{ message.username }}</div>
         <div class="date">{{ message.date }}</div>
-        <i v-if="message.user_id === user.id" class="bi bi-x delete-message"></i>
-        <div>{{ message.user_id }}</div>
-        <div>{{ user.id }}</div>
+        <i v-if="message.user_id === user.id" class="bi bi-x delete-message" @dblclick="DeleteMessage(message.channel_id, message.id)"></i>
       </div>
     </div>
   </div>
@@ -116,17 +114,25 @@ export default defineComponent({
         this.$emit("メッセージの送信に失敗しました。");
       }
     },
+    async DeleteMessage(channel_id: string, message_id: string) {
+      try {
+        const docRef = doc(db, "messages", channel_id, "messages", message_id);
+        await setDoc(docRef, {
+          is_valid: false,
+        }, { merge: true });
+        this.messages = this.messages.filter((message) => message.id !== message_id);
+      } catch (error) {
+        this.$emit("メッセージの削除に失敗しました。");
+      }
+    },
     Subscribe() {
       try {
         this.unsub = onSnapshot(collection(db, "messages", this.channel_selected, "messages"), (docs) => {
           const messages = [] as Message[];
           docs.forEach((doc) => {
-            messages.push({
-              id: doc.id,
-              text: doc.data().text,
-              username: doc.data().username,
-              date: doc.data().date.toDate().toLocaleString(),
-            } as Message);
+            const data = doc.data();
+            data.id = doc.id;
+            messages.push(data as Message);
           });
           this.messages = messages.sort((a, b) => a.date > b.date ? -1 : 1);
         });
@@ -200,8 +206,9 @@ export default defineComponent({
       position: absolute;
       top: 0;
       right: 0;
-      font-size: 0.5rem;
+      font-size: 1.5rem;
       color: red;
+      cursor: pointer;
     }
   }
 }
