@@ -61,11 +61,11 @@ export default defineComponent({
   props: {
     channel: {
       type: Object as () => Channel,
-      default: {} as Channel,
+      required: true,
     },
     channels: {
       type: Array as () => Channel[],
-      default: [] as Channel[],
+      required: true,
     },
   },
   data() {
