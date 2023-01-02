@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>✨✨✨ Chat Room ✨✨✨</h1>
-    <select v-model="channel_selected" class="form-select" aria-label="Select Channel" @input="$emit('UseChannel', $event?.target?.value)">
+    <select v-model="channel_selected" class="form-select" aria-label="Select Channel" @input="SelectedChange">
       <option v-for="_channel in channels" :key="_channel.id" :value="_channel.id">{{ _channel.name }}</option>
     </select>
     <div id="MessageDiv">
@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { collection, query, where, getDocs, setDoc, doc, onSnapshot } from "firebase/firestore";
+import { collection, query, where, getDocs, setDoc, doc, onSnapshot, Unsubscribe } from "firebase/firestore";
 import db from "~/src/firebase";
 
 import { Channel, Message, User } from "~/src/interface";
@@ -45,6 +45,7 @@ export default defineComponent({
   },
   data: function () {
     return {
+      unsub: null as Unsubscribe | null,
       channel_selected: '',
       text: '',
       messages: [] as Message[],
@@ -61,7 +62,15 @@ export default defineComponent({
     this.ReadMessages();
     this.Subscribe();
   },
+  beforeUnmount() {
+    this.Unsubscribe();
+  },
   methods: {
+    SelectedChange(event: Event) {
+      this.Unsubscribe();
+      this.$emit('UseChannel', event?.target?.value);
+      this.Subscribe();
+    },
     async ReadMessages() {
       const q = query(collection(db, "messages", this.channel_selected, "messages"), where("is_valid", "==", true));
       const querySnapshot = await getDocs(q);
@@ -74,7 +83,7 @@ export default defineComponent({
           date: doc.data().date.toDate().toLocaleString(),
         } as Message);
       });
-      this.messages = messages.sort((a, b) => a.date > b.date ? 1 : -1);
+      this.messages = messages.sort((a, b) => a.date > b.date ? -1 : 1);
     },
     async SendMessage() {
       if (this.text === '') return;
@@ -99,10 +108,25 @@ export default defineComponent({
       this.text = '';
     },
     Subscribe() {
-      const unsub = onSnapshot(doc(db, "messages", this.channel_selected), (doc) => {
-        console.log("Current data: ", doc.data());
+      this.unsub = onSnapshot(collection(db, "messages", this.channel_selected, "messages"), (docs) => {
+        const messages = [] as Message[];
+        docs.forEach((doc) => {
+          messages.push({
+            id: doc.id,
+            text: doc.data().text,
+            username: doc.data().username,
+            date: doc.data().date.toDate().toLocaleString(),
+          } as Message);
+        });
+        this.messages = messages.sort((a, b) => a.date > b.date ? -1 : 1);
       });
-    }
+    },
+    Unsubscribe() {
+      if (this.unsub) {
+        this.unsub();
+        this.unsub = null;
+      }
+    },
   }
 })
 </script>
@@ -119,10 +143,15 @@ export default defineComponent({
   }
 }
 #ChatContent {
+  margin: 0.5rem 0;
   padding: 0.5rem;
-  max-height: 500px;
+  max-height: 600px;
   overflow: auto;
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+  border-top: 1px lightgray solid;
+  border-bottom: 1px lightgray solid;
+  &::-webkit-scrollbar {
+    width: 0;
+  }
   .MessageUnit {
     display: grid;
     grid-template-columns: 1fr 1fr;
