@@ -1,7 +1,13 @@
 <!-- eslint-disable vue/require-v-for-key -->
 <template>
   <div id="Setting" :class="isOpen ? 'on' : 'off'">
-    <div id="Content"></div>
+    <div id="Content">
+      <div id="Features">
+        <button type="button" class="btn">Primary</button>
+        <button type="button" class="btn btn-primary">Primary</button>
+        <button type="button" class="btn">Primary</button>
+      </div>
+    </div>
     <div id="Fixed">
       <button id="Closer" :class="`${isOpen ? 'on' : 'off'} btn-close btn-close-white`" type="button" @click="Close"></button>
       <i id="Opener" :class="`${isOpen ? 'off' : 'on'} bi-gear`" type="button" @click="Open"></i>
@@ -49,6 +55,9 @@ export default defineComponent({
     }
     &.off {
       height: 0;
+      #Content {
+      display: none;
+    }
     }
     #Fixed {
       #Opener {
@@ -85,6 +94,18 @@ export default defineComponent({
         position: absolute;
         top: 0.5rem;
         right: 0.5rem;
+      }
+    }
+  }
+  #Content {
+    padding: 1rem;
+    #Features {
+      display: flex;
+      flex-direction: column;
+      button {
+        color: whitesmoke;
+        margin-top: 0.5rem;
+        text-align: left;
       }
     }
   }
