@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-const PROJECT_NAME = 'nuxtjs-template';
+const PROJECT_NAME = 'simple-chat-chat';
 const PRODUCTION_BASE_PATH = `/`;
 
 export default {
@@ -8,7 +8,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: '💓 nuxtjs-template 💓',
+    title: '💓 simple-chat-chat 💓',
     htmlAttrs: {
       lang: 'ja',
     },
