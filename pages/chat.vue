@@ -1,72 +1,111 @@
+<!-- eslint-disable vue/require-v-for-key -->
 <template>
   <div>
-    <HeaderDiv />
     <main>
-      <h2>👼 チャットルーム 👼</h2>
-      <p>Nuxt.jsに関する個人的に思った特徴の説明。</p>
-      <hr>
-      <p>HTML&amp;CSS&amp;JSをひとつのファイルでコンポーネントとして管理するため、機能ではなく部品としての管理がされています。</p>
-      <p>双方向バインディングであるため、比較的簡単に実現したい機能を実現できる一方で、大規模なシステムでは処理が複雑化しそうです。</p>
-      <p>ディレクトリ構成が定められているため、保守性は高い一方で複雑なシステムへの対応は困難に思えます。<br />僕的にはディレクトリ構成が公式で定められている方が好きです。</p>
-      <p>TypeScriptへの対応が弱い?<br />enum型など、完全にTypeScript独自のデータをテンプレートの中で使うことができなさそうです。<br />もっとも、enum型を避けるように書いている記事も多いので、これはNuxtに限定されたものではありませんが、、、</p>
-      <p>React(Next.js)と比べると直感的に書くことができます。<br />VueファイルはあくまでもHTML・CSS・JSです、React(Next.js)のようなJSX(TSX)などとは異なりますので、習得はしやすそうです。<br />個人的にはDOMをよりJSオブジェクトっぽくReact(Next.js)のほうが好みですが、、、</p>
-      <p></p>
+      <ChatSetting />
     </main>
-    <FooterDiv />
+    <div id="ErrorDialog" class="alert alert-danger" role="alert" :class="ErrorDialogMessage !== null ? '' : 'hidden'">
+      <span>{{ ErrorDialogMessage }}</span>
+      <button type="button" class="btn-close" aria-label="Close" @click="() => {ErrorDialogMessage = null}"></button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore/lite';
+
+import firebaseConfig from '~/firebaseConfig';
+
 import pages from '~/pages';
 
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+type Message = {
+  id: string;
+  name: string;
+  text: string;
+  date: Date;
+};
+
 export default defineComponent({
-  name: 'AboutPage',
+  name: 'FirestorePage',
   data() {
     return {
+      InsertError: null as string | null,
+      ErrorDialogMessage: null as string | null,
+      sending : false,
+      reading : false,
+      deleting : false,
       pages,
+      name: 'osawa-koki',
+      text: 'Hello simple-chat-chat 💓',
+      messages: [] as Message[],
     }
   },
+  computed: {
+    Date2String() {
+      return (date: Date) => {
+        try {
+          return date.toLocaleString();
+        } catch (error) {
+          return '????/??/?? ??:??:??';
+        }
+      }
+    }
+  },
+  methods: {
+    SetErrorDialog(error: string) {
+      this.ErrorDialogMessage = error;
+      setTimeout(() => {
+        this.ErrorDialogMessage = null;
+      }, 3000);
+    },
+  }
 })
 </script>
 
 <style lang="scss" scoped>
-.Central {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100vh;
-  h1 {
-    margin-top: 1rem;
+#Messages {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: 2fr 5fr 2fr 1fr;
+  gap: 0.5rem;
+  * {
+    border: 1px solid rgb(245, 245, 245);
+    padding: 0.5rem;
+    margin: 0;
   }
-  img {
-    margin-top: 1rem;
-    border-radius: 50%;
-    border: 1px lightgray solid;
+  .date {
+    font-size: 0.5rem;
+    display: flex;
+    align-items: center;
   }
 }
-#Contents {
-  display: flex;
-  list-style: none;
-  padding: 0;
-  li {
-    margin-right: 0.5rem;
-    margin-bottom: 1rem;
-    padding-right: 0.5rem;
-    border-right: 1px lightgray solid;
-    &:last-child {
-      margin-right: 0;
-      padding-right: 0;
-      border-right: none;
-    }
-    a {
-      font-size: 1.1rem;
-      color: #0E6DFE;
-      text-decoration: none;
-      &:hover {
-        text-decoration: underline;
-      }
-    }
+#ErrorDialog {
+  $height: 100px;
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  width: 300px;
+  height: $height;
+  z-index: 100;
+  margin: 0;
+  transition: all 1s;
+  button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    margin: 0;
+  }
+  &.hidden {
+    bottom: -#{$height};
   }
 }
 </style>
