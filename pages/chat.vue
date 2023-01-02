@@ -4,6 +4,7 @@
   <main>
     <ChatSetting :screen="screen" @SetScreen="SetScreen" />
     <WelcomeComponent v-if="screen === 0" />
+    <ChatComponent v-if="screen === 1" :channel="channel" :channels="channels" :user="user" @UseChannel="UseChannel" @SetDialog="SetDialog" />
     <ChannelComponent v-if="screen === 2" :channel="channel" :channels="channels" @UseChannel="UseChannel" @MakeChannel="MakeChannel" @DeleteChannel="DeleteChannel" @ImportChannel="ImportChannel" @SetDialog="SetDialog" />
     <ProfileComponent v-if="screen === 3" :user="user" @SetProfile="SetProfile" @SetDialog="SetDialog" />
   </main>
@@ -85,8 +86,8 @@ export default defineComponent({
     SetScreen(screen: number) {
       this.screen = screen;
     },
-    UseChannel(channel: Channel) {
-      this.channel = channel;
+    UseChannel(channel_id: string) {
+      this.channel = this.channels.find((c) => c.id === channel_id) as Channel;
     },
     async MakeChannel(channel: Channel) {
       try {
@@ -118,15 +119,15 @@ export default defineComponent({
         this.SetDialog("チャネルのインポートに失敗しました。", -1);
       }
     },
-    DeleteChannel(channel: Channel) {
+    DeleteChannel(channel_id: string) {
       // テンプレチャネルは削除できない
-      if (template_channels.find((c) => c.id === channel.id)) {
+      if (template_channels.find((c) => c.id === channel_id)) {
         this.SetDialog("テンプレートチャネルは削除できません。", -1);
         return;
       }
       try {
-        deleteDoc(doc(db, "channels", channel.id));
-        this.channels = this.channels.filter((c) => c.id !== channel.id);
+        deleteDoc(doc(db, "channels", channel_id));
+        this.channels = this.channels.filter((c) => c.id !== channel_id);
         this.SetDialog("チャネルを削除しました。", 0);
       } catch (error) {
         this.SetDialog("チャネルの削除に失敗しました。", -1);

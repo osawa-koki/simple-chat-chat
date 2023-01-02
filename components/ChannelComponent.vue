@@ -43,8 +43,8 @@
           <div class="name">{{ _channel.name }}</div>
           <div class="description">{{ _channel.description }}</div>
           <div v-if="_channel.id === channel?.id" class="select">🌠 Now! 🌠</div>
-          <div v-else class="select"><button type="button" class="btn btn-outline-info btn-sm" @click="$emit('UseChannel', _channel)">Use 🐬</button></div>
-          <div class="delete"><button type="button" class="btn btn-outline-danger btn-sm" @click="$emit('DeleteChannel', _channel)">Delete 💣</button></div>
+          <div v-else class="select"><button type="button" class="btn btn-outline-info btn-sm" @click="$emit('UseChannel', _channel.id)">Use 🐬</button></div>
+          <div class="delete"><button type="button" class="btn btn-outline-danger btn-sm" @click="$emit('DeleteChannel', _channel.id)">Delete 💣</button></div>
         </template>
       </div>
     </div>
