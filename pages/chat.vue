@@ -2,7 +2,7 @@
 <template>
   <div>
     <main>
-      <ChatSetting />
+      <ChatSetting :screen="screen" @SetScreen="SetScreen" />
     </main>
     <div id="ErrorDialog" class="alert alert-danger" role="alert" :class="ErrorDialogMessage !== null ? '' : 'hidden'">
       <span>{{ ErrorDialogMessage }}</span>
@@ -35,6 +35,7 @@ export default defineComponent({
   name: 'FirestorePage',
   data() {
     return {
+      screen: 0,
       InsertError: null as string | null,
       ErrorDialogMessage: null as string | null,
       sending : false,
@@ -58,6 +59,11 @@ export default defineComponent({
     }
   },
   methods: {
+    SetScreen(screen: number) {
+      console.log('SetScreen', screen);
+
+      this.screen = screen;
+    },
     SetErrorDialog(error: string) {
       this.ErrorDialogMessage = error;
       setTimeout(() => {

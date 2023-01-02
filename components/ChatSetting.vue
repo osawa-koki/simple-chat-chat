@@ -2,10 +2,8 @@
 <template>
   <div id="Setting" :class="isOpen ? 'on' : 'off'">
     <div id="Content">
-      <div id="Features">
-        <button type="button" class="btn">Primary</button>
-        <button type="button" class="btn btn-primary">Primary</button>
-        <button type="button" class="btn">Primary</button>
+      <div v-for="feature in features" id="Features">
+        <button type="button" :class="`${screen === feature.id ? 'btn-primary' : ''} btn`" @click="$emit('SetScreen', feature.id)">{{ feature.name }}</button>
       </div>
     </div>
     <div id="Fixed">
@@ -17,12 +15,24 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import features from "~/src/features";
 
 export default defineComponent({
   name: 'ChatSettingPage',
+  props: {
+    screen: {
+      type: Number,
+      default: 0,
+      // 0 -> デフォルト
+      // 1 -> チャット
+      // 2 -> チャネル
+      // 3 -> プロフィール
+    },
+  },
   data() {
     return {
       isOpen: false,
+      features,
     }
   },
   methods: {
