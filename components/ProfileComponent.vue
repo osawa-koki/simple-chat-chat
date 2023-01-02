@@ -6,9 +6,9 @@
       <p>プロフィールの設定を行うことができます。</p>
       <h2>🦈 Your Profile</h2>
       <hr />
-      <h3>🐔 Your name</h3>
+      <h3>🐙 Your name</h3>
       <div class="alert alert-primary" role="alert">{{ user.name }}</div>
-      <h3>🐔 Your comment</h3>
+      <h3>🐙 Your comment</h3>
       <div class="alert alert-info comment" role="alert">{{ user.comment }}</div>
       <hr />
       <div class="box">
