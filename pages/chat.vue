@@ -37,12 +37,6 @@ export default defineComponent({
       InsertError: null as string | null,
       DialogMessage: null as string | null,
       DialogType: 0 as number, // 0: Success, -1: Error
-      sending: false,
-      reading: false,
-      deleting: false,
-      pages,
-      name: "osawa-koki",
-      text: "Hello simple-chat-chat 💓",
       messages: [] as Message[],
       channel: template_channels[0] as Channel,
       channels: template_channels as Channel[],
@@ -73,6 +67,7 @@ export default defineComponent({
       this.SetDialog("チャネルを作成しました。", 0);
     },
     DeleteChannel(channel: Channel) {
+      if (window.confirm("本当に削除しますか？") === false) return;
       this.channels = this.channels.filter((c) => c.id !== channel.id);
       this.SetDialog("チャネルを削除しました。", 0);
     },
