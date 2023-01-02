@@ -6,6 +6,7 @@ type Message = {
   username: string;
   text: string;
   date: Date;
+  is_valid: boolean;
 };
 
 type Channel = {

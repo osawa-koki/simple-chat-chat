@@ -62,17 +62,18 @@ export default defineComponent({
   },
   methods: {
     async ReadMessages() {
-      const q = query(collection(db, "messages"), where("channel_id", "==", this.channel_selected));
+      const q = query(collection(db, "messages", this.channel_selected, "messages"), where("is_valid", "==", true));
       const querySnapshot = await getDocs(q);
+      const messages = [] as Message[];
       querySnapshot.forEach((doc) => {
-        // this.messages.push(doc.data() as Message);
-        this.messages.push({
+        messages.push({
           id: doc.id,
           text: doc.data().text,
           username: doc.data().username,
           date: doc.data().date.toDate().toLocaleString(),
         } as Message);
       });
+      this.messages = messages.sort((a, b) => a.date > b.date ? 1 : -1);
     },
     async SendMessage() {
       if (this.text === '') return;
@@ -83,10 +84,20 @@ export default defineComponent({
         username: this.user.name,
         channel_id: this.channel_selected,
         date: new Date(),
+        is_valid: true,
       };
-      // dbに追加
-      await setDoc(doc(db, "messages", id), message);
+      // ドキュメントを取得
+      const docRef = doc(db, "messages", this.channel_selected);
+      // ドキュメントが存在しない場合は作成
+      await setDoc(docRef, {
+        id: this.channel_selected,
+        name: this.channel_selected,
+      }, { merge: true });
+      // メッセージを追加
+      await setDoc(doc(db, "messages", this.channel_selected, "messages", id), message);
       this.text = '';
+    },
+    Subscribe() {
     }
   }
 })
