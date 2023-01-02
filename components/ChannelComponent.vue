@@ -34,8 +34,8 @@
           <div class="name">{{ _channel.name }}</div>
           <div class="description">{{ _channel.description }}</div>
           <div v-if="_channel.id === channel?.id" class="select">🌠 Now! 🌠</div>
-          <div v-else class="select"><button type="button" class="btn btn-outline-info" @click="$emit('UseChannel', _channel)">Use 🐬</button></div>
-          <div class="delete"><button type="button" class="btn btn-outline-danger" @click="$emit('DeleteChannel', _channel)">Delete 💣</button></div>
+          <div v-else class="select"><button type="button" class="btn btn-outline-info btn-sm" @click="$emit('UseChannel', _channel)">Use 🐬</button></div>
+          <div class="delete"><button type="button" class="btn btn-outline-danger btn-sm" @click="$emit('DeleteChannel', _channel)">Delete 💣</button></div>
         </template>
       </div>
     </div>
@@ -126,7 +126,7 @@ export default defineComponent({
       }
     }
     @include media-breakpoint-up(md) {
-      grid-template-columns: minmax(5rem, 15rem) minmax(10rem, 30rem) minmax(5rem, 10rem) minmax(5rem, 10rem);
+      grid-template-columns: minmax(5rem, 15rem) minmax(10rem, 30rem) minmax(5rem, 7rem) minmax(5rem, 7rem);
       div {
         padding-bottom: 1rem;
         border-bottom: 1px lightskyblue solid;
