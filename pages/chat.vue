@@ -23,8 +23,6 @@ import firebaseConfig from '~/firebaseConfig';
 import { Message, Channel } from '~/src/interface';
 import { template_channels } from "~/src/templates";
 
-import pages from '~/pages';
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
